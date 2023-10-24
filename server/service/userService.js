@@ -34,6 +34,29 @@ exports.registration = async (email, password) => {
     return {...tokens, user: userDto}
 }
 
+exports.login = async (email, password) => {
+  const user = await UserModel.findOne({ email });
+  if (!user) {
+    throw ApiError.BadRequest(
+      `Пользователь с почтовым адресом ${email} не зарегистрирован`
+    );
+  }
+
+  const isPasswordEquals = await bcrypt.compareSync(password, user.password)
+  if(!isPasswordEquals) {
+    throw ApiError.BadRequest(
+      "Неверный пароль"
+    );
+  }
+
+  const userDto = new UserDto(user); // id, email, isActivated
+  // создаем и сохраняем токены
+  const tokens = TokenService.generateTokens({ ...userDto }); // передаем пейлоад туда
+  await TokenService.saveToken(userDto.id, tokens.refreshToken);
+
+  return { ...tokens, user: userDto };
+};
+
 exports.getAllUsers = async () => {
     try {
         const users = await UserModel.find({})
