@@ -36,3 +36,28 @@ exports.removeToken = async (refreshToken) => {
         console.log("TokenService - removeToken - error: ", error);
     }
 }
+
+exports.validateAccessToken = async (token) => {
+    try {
+        const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
+        return userData
+    } catch (error) {
+        return null
+    }
+}
+exports.validateRefreshToken = async (token) => {
+    try {
+        const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET)
+        return userData
+    } catch (error) {
+        return null
+    }
+}
+exports.findToken = async (refreshToken) => {
+  try {
+    const tokenData = await TokenModel.findOne({ refreshToken });
+    return tokenData;
+  } catch (error) {
+    console.log("TokenService - removeToken - error: ", error);
+  }
+};

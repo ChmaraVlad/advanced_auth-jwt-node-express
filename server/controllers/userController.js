@@ -71,7 +71,15 @@ exports.activate = async (req, res, next) => {
 }
 exports.refresh = async (req, res, next) => {
     try {
-        
+        const {refreshToken} = req.cookies
+
+        const userData = await UserService.refreshToken(refreshToken)
+        res.cookie("refreshToken", userData.refreshToken, {
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+        });
+
+        res.json({ userData });
     } catch (error) {
         console.log('userController refresh => error: ', error);
         next(error);

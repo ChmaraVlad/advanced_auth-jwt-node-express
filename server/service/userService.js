@@ -63,6 +63,26 @@ exports.logout = async (refreshToken) => {
   return token
 }
 
+exports.refreshToken = async (refreshToken) => {
+  if(!refreshToken) {
+    throw ApiError.UnauthorizedError()
+  }
+
+  const validToken = await TokenService.validateRefreshToken(refreshToken)
+  const refreshToktenFromDb = await TokenService.findToken(refreshToken)
+
+  if(!validToken || !refreshToktenFromDb) {
+    throw ApiError.UnauthorizedError()
+  }
+
+  const user = await UserModel.findOne({refreshToken})
+  const userDto = new UserDto(user)
+  const tokens = TokenService.generateTokens({ ...userDto }); // передаем пейлоад туда
+  await TokenService.saveToken(userDto.id, tokens.refreshToken);
+
+  return { ...tokens, user: userDto };
+}
+
 exports.getAllUsers = async () => {
     try {
         const users = await UserModel.find({})
