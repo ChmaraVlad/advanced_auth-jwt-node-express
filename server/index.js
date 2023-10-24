@@ -6,7 +6,11 @@ const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
 
+// routes
 const apiRouter = require('./router/index')
+
+// middlewares
+const errorMiddleware = require('./middlewares/errorMiddleware')
 
 const PORT = process.env.PORT || 5000
 
@@ -21,11 +25,12 @@ app.use(express.json())
 app.use(cookieParser())
 // чтобы не было проблем с запросами в браузере
 app.use(cors())
-
 // middleware for logs
 app.use(morgan('dev'))
 
 app.use('/api', apiRouter)
+
+app.use(errorMiddleware)
 
 const start = async () => {
     try {

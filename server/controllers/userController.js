@@ -11,6 +11,7 @@ exports.registration = async (req, res, next) => {
         res.json({userData})
     } catch (error) {
         console.log('userController registration => error: ', error);
+        next(error);
     }
 }
 exports.login = async (req, res, next) => {
@@ -18,6 +19,7 @@ exports.login = async (req, res, next) => {
         
     } catch (error) {
         console.log('userController login => error: ', error);
+        next(error);
     }
 }
 exports.logout = async (req, res, next) => {
@@ -25,6 +27,7 @@ exports.logout = async (req, res, next) => {
         
     } catch (error) {
         console.log('userController logout => error: ', error);
+        next(error);
     }
 }
 exports.activate = async (req, res, next) => {
@@ -35,6 +38,7 @@ exports.activate = async (req, res, next) => {
         return res.redirect(process.env.CLIENT_URL)
     } catch (error) {
         console.log('userController activate => error: ', error);
+        next(error);
     }
 }
 exports.refresh = async (req, res, next) => {
@@ -42,6 +46,7 @@ exports.refresh = async (req, res, next) => {
         
     } catch (error) {
         console.log('userController refresh => error: ', error);
+        next(error);
     }
 }
 exports.users = async (req, res, next) => {
@@ -50,5 +55,6 @@ exports.users = async (req, res, next) => {
         res.json({users})
     } catch (error) {
         console.log('userController users => error: ', error);
+        next(error);
     }
 }

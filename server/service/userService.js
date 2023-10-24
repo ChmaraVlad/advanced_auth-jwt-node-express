@@ -7,10 +7,14 @@ const TokenService = require('./tokenService')
 const bcrypt = require('bcrypt')
 const uuid = require('uuid')
 
+const ApiError = require('../exceptions/apiError')
+
 exports.registration = async (email, password) => {   
     const candidate = await UserModel.findOne({email})
     if(candidate) {
-        throw new Error(`Пользователь с почтовым адресом ${email} уже зарегистрирован`)
+        throw ApiError.BadRequest(
+          `Пользователь с почтовым адресом ${email} уже зарегистрирован`
+        );
     }
     const hashPassword = await bcrypt.hash(password, 3)
     // сохдаем ссилку для активации имейла
@@ -45,7 +49,7 @@ exports.activate = async (activationLink) => {
   try {
     const user = await UserModel.findOne({ activationLink });
     if(!user) {
-        throw new Error('Некоректная ссылка активации')
+        throw ApiError.BadRequest("Некоректная ссылка активации");
     }
     user.isActivated = true
     await user.save()
