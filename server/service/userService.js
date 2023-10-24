@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt')
 const uuid = require('uuid')
 
 const ApiError = require('../exceptions/apiError')
+const tokenModel = require('../models/token-model')
 
 exports.registration = async (email, password) => {   
     const candidate = await UserModel.findOne({email})
@@ -56,6 +57,11 @@ exports.login = async (email, password) => {
 
   return { ...tokens, user: userDto };
 };
+
+exports.logout = async (refreshToken) => {
+  const token = await TokenService.removeToken(refreshToken)
+  return token
+}
 
 exports.getAllUsers = async () => {
     try {
